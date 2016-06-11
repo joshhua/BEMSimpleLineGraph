@@ -293,7 +293,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 #endif
         self.noDataLabel.font = self.noDataLabelFont ?: [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
         self.noDataLabel.textColor = self.noDataLabelColor ?: self.colorLine;
-
+	self.noDataLabel.userInteractionEnabled = YES;
         [self.viewForBaselineLayout addSubview:self.noDataLabel];
         
         // Let the delegate know that the graph finished layout updates
@@ -369,7 +369,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
                 
                 NSString *fullString = [NSString stringWithFormat:@"%@%@%@", prefix, longestString, suffix];
                 
-                NSString *mString = [fullString stringByReplacingOccurrencesOfString:@"[0-9-]" withString:@"N" options:NSRegularExpressionSearch range:NSMakeRange(0, [longestString length])];
+                NSString *mString = [fullString stringByReplacingOccurrencesOfString:@"[0-9-]" withString:@"w" options:NSRegularExpressionSearch range:NSMakeRange(0, [longestString length])];
                 
                 self.popUpLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 0, 200, 20)];
                 self.popUpLabel.text = mString;
@@ -440,7 +440,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
                 suffix = [self.delegate yAxisSuffixOnLineGraph:self];
             }
             
-            NSString *mString = [longestString stringByReplacingOccurrencesOfString:@"[0-9-]" withString:@"N" options:NSRegularExpressionSearch range:NSMakeRange(0, [longestString length])];
+            NSString *mString = [longestString stringByReplacingOccurrencesOfString:@"[0-9-]" withString:@"w" options:NSRegularExpressionSearch range:NSMakeRange(0, [longestString length])];
             NSString *fullString = [NSString stringWithFormat:@"%@%@%@", prefix, mString, suffix];
             self.YAxisLabelXOffset = [fullString sizeWithAttributes:attributes].width + 2;//MAX([maxValueString sizeWithAttributes:attributes].width + 10,
                                      //    [minValueString sizeWithAttributes:attributes].width) + 5;
