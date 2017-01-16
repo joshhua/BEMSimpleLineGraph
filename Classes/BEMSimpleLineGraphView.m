@@ -293,7 +293,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 #endif
         self.noDataLabel.font = self.noDataLabelFont ?: [UIFont fontWithName:@"HelveticaNeue-Light" size:15];
         self.noDataLabel.textColor = self.noDataLabelColor ?: self.colorLine;
-	self.noDataLabel.userInteractionEnabled = YES;
+        self.noDataLabel.userInteractionEnabled = YES;
         [self.viewForBaselineLayout addSubview:self.noDataLabel];
         
         // Let the delegate know that the graph finished layout updates
@@ -954,7 +954,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
                 yAxisPosition += increment;
             }
         } else if (numberOfLabels <= 0) return;
-        else if (numberOfLabels == 1) {
+        else if (numberOfLabels == 1 || !minimumValue) {
             [dotValues removeAllObjects];
             [dotValues addObject:[NSNumber numberWithInt:(minimumValue.intValue + maximumValue.intValue)/2]];
         } else {
@@ -966,7 +966,10 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
         }
         
         for (NSNumber *dotValue in dotValues) {
-            CGFloat yAxisPosition = [self yPositionForDotValue:dotValue.floatValue];
+            CGFloat yAxisPosition = [self yPositionForDotValue:dotValue.doubleValue];
+            if (isfinite(yAxisPosition) == false) {
+                yAxisPosition = (self.frame.size.height - self.XAxisLabelYOffset) * .5;
+            }
             UILabel *labelYAxis = [[UILabel alloc] initWithFrame:frameForLabelYAxis];
             NSString *formattedValue = [NSString stringWithFormat:self.formatStringForValues, dotValue.doubleValue];
             labelYAxis.text = [NSString stringWithFormat:@"%@%@%@", yAxisPrefix, formattedValue, yAxisSuffix];

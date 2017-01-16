@@ -145,21 +145,22 @@
             [self.points addObject:[NSValue valueWithCGPoint:value]];
         }
     }
-
-    BOOL bezierStatus = self.bezierCurveIsEnabled;
-    if (self.arrayOfPoints.count <= 2 && self.bezierCurveIsEnabled == YES) bezierStatus = NO;
-    
-    if (!self.disableMainLine && bezierStatus) {
-        line = [BEMLine quadCurvedPathWithPoints:self.points];
-        fillBottom = [BEMLine quadCurvedPathWithPoints:self.bottomPointsArray];
-        fillTop = [BEMLine quadCurvedPathWithPoints:self.topPointsArray];
-    } else if (!self.disableMainLine && !bezierStatus) {
-        line = [BEMLine linesToPoints:self.points];
-        fillBottom = [BEMLine linesToPoints:self.bottomPointsArray];
-        fillTop = [BEMLine linesToPoints:self.topPointsArray];
-    } else {
-        fillBottom = [BEMLine linesToPoints:self.bottomPointsArray];
-        fillTop = [BEMLine linesToPoints:self.topPointsArray];
+    if (self.points.count) {
+        BOOL bezierStatus = self.bezierCurveIsEnabled;
+        if (self.arrayOfPoints.count <= 2 && self.bezierCurveIsEnabled == YES) bezierStatus = NO;
+        
+        if (!self.disableMainLine && bezierStatus) {
+            line = [BEMLine quadCurvedPathWithPoints:self.points];
+            fillBottom = [BEMLine quadCurvedPathWithPoints:self.bottomPointsArray];
+            fillTop = [BEMLine quadCurvedPathWithPoints:self.topPointsArray];
+        } else if (!self.disableMainLine && !bezierStatus) {
+            line = [BEMLine linesToPoints:self.points];
+            fillBottom = [BEMLine linesToPoints:self.bottomPointsArray];
+            fillTop = [BEMLine linesToPoints:self.topPointsArray];
+        } else {
+            fillBottom = [BEMLine linesToPoints:self.bottomPointsArray];
+            fillTop = [BEMLine linesToPoints:self.topPointsArray];
+        }
     }
 
     //----------------------------//
