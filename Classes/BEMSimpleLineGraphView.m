@@ -478,7 +478,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     
     // Loop through each point and add it to the graph
     @autoreleasepool {
-        for (int i = 0; i < numberOfPoints; i++) {
+        for (NSInteger i = 0; i < numberOfPoints; i++) {
             CGFloat dotValue = 0;
             
 #if !TARGET_INTERFACE_BUILDER
@@ -505,12 +505,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 #endif
             [dataPoints addObject:@(dotValue)];
             
-            if (self.positionYAxisRight) {
-                positionOnXAxis = (((self.frame.size.width - self.YAxisLabelXOffset) / (numberOfPoints - 1)) * i);
-            } else {
-                positionOnXAxis = (((self.frame.size.width - self.YAxisLabelXOffset) / (numberOfPoints - 1)) * i) + self.YAxisLabelXOffset;
-            }
-            
+            positionOnXAxis = [self xPositionAtIndex:i];
             positionOnYAxis = [self yPositionForDotValue:dotValue];
             
             [yAxisValues addObject:@(positionOnYAxis)];
@@ -550,7 +545,9 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
                             if (self.alwaysDisplayDots == NO && self.displayDotsOnly == NO) {
                                 [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
                                     circleDot.alpha = 0;
-                                } completion:nil];
+                                } completion:^(BOOL finished) {
+                                    if (self.removeDotsAfterAnimating) [circleDot removeFromSuperview];
+                                }];
                             }
                         }];
                     }
@@ -561,6 +558,14 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     
     // CREATION OF THE LINE AND BOTTOM AND TOP FILL
     [self drawLine];
+}
+
+- (CGFloat)xPositionAtIndex:(NSInteger)index {
+    if (self.positionYAxisRight) {
+        return (((self.frame.size.width - self.YAxisLabelXOffset) / (numberOfPoints - 1)) * index);
+    } else {
+        return (((self.frame.size.width - self.YAxisLabelXOffset) / (numberOfPoints - 1)) * index) + self.YAxisLabelXOffset;
+    }
 }
 
 - (void)drawLine {
@@ -861,12 +866,8 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     xAxisHorizontalFringeNegationValue = horizontalTranslation;
     
     // Determine the final x-axis position
-    CGFloat positionOnXAxis;
-    if (self.positionYAxisRight) {
-        positionOnXAxis = (((self.frame.size.width - self.YAxisLabelXOffset) / (numberOfPoints - 1)) * index) + horizontalTranslation;
-    } else {
-        positionOnXAxis = (((self.frame.size.width - self.YAxisLabelXOffset) / (numberOfPoints - 1)) * index) + self.YAxisLabelXOffset + horizontalTranslation;
-    }
+    CGFloat positionOnXAxis = [self xPositionAtIndex:index] + horizontalTranslation;
+
     
     // Set the final center point of the x-axis labels
     if (self.positionYAxisRight) {

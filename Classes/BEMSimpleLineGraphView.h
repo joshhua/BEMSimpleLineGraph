@@ -222,6 +222,10 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 @property (nonatomic) BOOL displayDotsWhileAnimating;
 
 
+/// If set to YES, the dots wil be removed after animating.  Default value is NO.
+@property (nonatomic) BOOL removeDotsAfterAnimating;
+
+
 /// If set to YES, pop up labels with the Y-value of the point will always be visible. Default value is NO.
 @property (nonatomic) BOOL alwaysDisplayPopUpLabels;
 
