@@ -578,7 +578,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     
     line.opaque = NO;
     line.alpha = 1;
-    line.backgroundColor = [UIColor clearColor];
+    line.backgroundColor = self.backgroundColor;
     line.topColor = self.colorTop;
     line.bottomColor = self.colorBottom;
     line.topAlpha = self.alphaTop;
@@ -842,7 +842,8 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     labelXAxis.font = self.labelFont;
     labelXAxis.textAlignment = 1;
     labelXAxis.textColor = self.colorXaxisLabel;
-    labelXAxis.backgroundColor = [UIColor clearColor];
+    labelXAxis.backgroundColor = self.colorBackgroundXaxis ?: self.backgroundColor;
+    labelXAxis.opaque = YES;
     labelXAxis.tag = DotLastTag1000;
     
     // Add support multi-line, but this might overlap with the graph line if text have too many lines
@@ -979,7 +980,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
             labelYAxis.textAlignment = textAlignmentForLabelYAxis;
             labelYAxis.font = self.labelFont;
             labelYAxis.textColor = self.colorYaxisLabel;
-            labelYAxis.backgroundColor = [UIColor clearColor];
+            labelYAxis.backgroundColor = self.colorBackgroundYaxis ?: self.backgroundColor;
             labelYAxis.tag = LabelYAxisTag2000;
             labelYAxis.center = CGPointMake(xValueForCenterLabelYAxis, yAxisPosition);
             [self addSubview:labelYAxis];
@@ -1007,7 +1008,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
             labelYAxis.font = self.labelFont;
             labelYAxis.textAlignment = textAlignmentForLabelYAxis;
             labelYAxis.textColor = self.colorYaxisLabel;
-            labelYAxis.backgroundColor = [UIColor clearColor];
+            labelYAxis.backgroundColor = self.colorBackgroundYaxis ?: self.backgroundColor;
             labelYAxis.tag = LabelYAxisTag2000;
             
             [self addSubview:labelYAxis];
