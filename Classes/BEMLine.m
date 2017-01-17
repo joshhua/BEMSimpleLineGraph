@@ -278,11 +278,16 @@
             [shadowPath addLineToPoint:CGPointApplyAffineTransform(lineCopy.currentPoint, transform)];
             pathLayer.shadowColor = self.lineShadowColor.CGColor;
             pathLayer.shadowRadius = self.lineShadowRadius;
-            CGFloat white, alpha;
-            [self.lineShadowColor getWhite:&white alpha:&alpha];
             pathLayer.shadowOffset = CGSizeZero;
             pathLayer.shadowPath = shadowPath.CGPath;
-            self.opaque = YES;
+            pathLayer.shadowOpacity = 0;
+            
+            CGFloat alpha = -1.;
+            [self.lineShadowColor getWhite:NULL alpha:&alpha];
+            if (alpha == -1.) {
+                [self.lineShadowColor getRed:NULL green:NULL blue:NULL alpha:&alpha];
+            }
+            
             dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.animationTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
                 pathLayer.shadowOpacity = alpha;
             });

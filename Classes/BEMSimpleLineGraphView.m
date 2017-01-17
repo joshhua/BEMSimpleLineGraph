@@ -576,7 +576,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     
     BEMLine *line = [[BEMLine alloc] initWithFrame:[self drawableGraphArea]];
     
-    line.opaque = NO;
+    line.opaque = (self.alphaTop == 1. && self.alphaBottom == 1.);
     line.alpha = 1;
     line.backgroundColor = self.backgroundColor;
     line.topColor = self.colorTop;
