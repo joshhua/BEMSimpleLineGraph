@@ -264,6 +264,29 @@
         if (self.animationTime > 0) [self animateForLayer:pathLayer withAnimationType:self.animationType isAnimatingReferenceLine:NO];
         if (self.lineGradient) [self.layer addSublayer:[self backgroundGradientLayerForLayer:pathLayer]];
         else [self.layer addSublayer:pathLayer];
+        if (self.lineShadowColor && !line.isEmpty) {
+            pathLayer.shadowOpacity = 0;
+            CGAffineTransform transform = CGAffineTransformMakeTranslation(self.lineShadowOffset.width,
+                                                                           self.lineShadowOffset.height + self.lineWidth);
+            UIBezierPath *lineCopy = [line copy];
+            [lineCopy applyTransform:CGAffineTransformMakeTranslation(0, -.5 * self.lineWidth)];
+            UIBezierPath *shadowPath = [lineCopy bezierPathByReversingPath];
+            CGPoint nextPoint = shadowPath.currentPoint;
+            [shadowPath applyTransform:transform];
+            [shadowPath addLineToPoint:nextPoint];
+            [shadowPath appendPath:lineCopy];
+            [shadowPath addLineToPoint:CGPointApplyAffineTransform(lineCopy.currentPoint, transform)];
+            pathLayer.shadowColor = self.lineShadowColor.CGColor;
+            pathLayer.shadowRadius = self.lineShadowRadius;
+            CGFloat white, alpha;
+            [self.lineShadowColor getWhite:&white alpha:&alpha];
+            pathLayer.shadowOffset = CGSizeZero;
+            pathLayer.shadowPath = shadowPath.CGPath;
+            self.opaque = YES;
+            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(self.animationTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+                pathLayer.shadowOpacity = alpha;
+            });
+        }
     }
 
     if (self.averageLine.enableAverageLine == YES) {

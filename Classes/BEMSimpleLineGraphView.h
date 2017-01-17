@@ -361,6 +361,9 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 /// When set to YES, dots will be displayed at full opacity and no line will be drawn through the dots. Default value is NO.
 @property (nonatomic) BOOL displayDotsOnly;
 
+@property (nonatomic) CGFloat lineShadowRadius;
+@property (nonatomic) CGSize lineShadowOffset;
+@property (nonatomic) UIColor *lineShadowColor;
 
 @end
 

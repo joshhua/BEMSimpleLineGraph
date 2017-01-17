@@ -39,6 +39,10 @@ typedef NS_ENUM(NSUInteger, BEMLineGradientDirection) {
 @interface BEMLine : UIView
 
 
+@property (nonatomic) CGFloat lineShadowRadius;
+@property (nonatomic) CGSize lineShadowOffset;
+@property (nonatomic) UIColor *lineShadowColor;
+
 
 //----- POINTS -----//
 

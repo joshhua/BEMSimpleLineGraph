@@ -623,8 +623,11 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
     
     line.disableMainLine = self.displayDotsOnly;
     
-    [self addSubview:line];
-    [self sendSubviewToBack:line];
+    line.lineShadowRadius = self.lineShadowRadius;
+    line.lineShadowColor = self.lineShadowColor;
+    line.lineShadowOffset = self.lineShadowOffset;
+    
+    [self insertSubview:line atIndex:0];
     [self sendSubviewToBack:self.backgroundXAxis];
     
     [self didFinishDrawingIncludingYAxis:NO];
