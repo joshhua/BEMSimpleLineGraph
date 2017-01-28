@@ -442,11 +442,11 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
             
             NSString *mString = [longestString stringByReplacingOccurrencesOfString:@"[0-9-]" withString:@"w" options:NSRegularExpressionSearch range:NSMakeRange(0, [longestString length])];
             NSString *fullString = [NSString stringWithFormat:@"%@%@%@", prefix, mString, suffix];
-            self.YAxisLabelXOffset = ceil([fullString sizeWithAttributes:attributes].width + 2);//MAX([maxValueString sizeWithAttributes:attributes].width + 10,
+            self.YAxisLabelXOffset = ceil([fullString sizeWithAttributes:attributes].width + 4);//MAX([maxValueString sizeWithAttributes:attributes].width + 10,
                                      //    [minValueString sizeWithAttributes:attributes].width) + 5;
         } else {
             NSString *longestString = [NSString stringWithFormat:@"%i", (int)self.frame.size.height];
-            self.YAxisLabelXOffset = [longestString sizeWithAttributes:attributes].width + 5;
+            self.YAxisLabelXOffset = ceil([longestString sizeWithAttributes:attributes].width + 5);
         }
     } else self.YAxisLabelXOffset = 0;
 
