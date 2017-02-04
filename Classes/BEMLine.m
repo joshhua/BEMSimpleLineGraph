@@ -33,6 +33,7 @@
         _enableLeftReferenceFrameLine = YES;
         _enableBottomReferenceFrameLine = YES;
         _interpolateNullValues = YES;
+        self.userInteractionEnabled = YES;
     }
     return self;
 }
