@@ -656,7 +656,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
                 [label removeFromSuperview];
             }
         }
-        for (NSUInteger i = self.circleDots.count -1; i>=numberOfPoints; i--) {
+        if (self.circleDots.count) for (NSUInteger i = self.circleDots.count -1; i>=numberOfPoints; i--) {
             [[self.permanentPopups lastObject] removeFromSuperview]; //no harm if not showing
             [self.permanentPopups removeLastObject];
             [[self.circleDots lastObject] removeFromSuperview];
@@ -822,7 +822,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
             xAxisLabelNumber++;
         }
     }
-    for (NSUInteger i = self.xAxisLabels.count ; i>xAxisLabelNumber; i--) {
+    if (self.xAxisLabels.count) for (NSUInteger i = self.xAxisLabels.count ; i>xAxisLabelNumber; i--) {
         [[self.xAxisLabels lastObject] removeFromSuperview];
         [self.xAxisLabels removeLastObject];
     }
@@ -1061,7 +1061,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         }
     }
 
-    for (NSUInteger i = self.yAxisLabels.count -1; i>=yAxisLabelNumber; i--) {
+    if (self.yAxisLabels.count) for (NSUInteger i = self.yAxisLabels.count -1; i>=yAxisLabelNumber; i--) {
         [[self.yAxisLabels lastObject] removeFromSuperview];
         [self.yAxisLabels removeLastObject];
     }
