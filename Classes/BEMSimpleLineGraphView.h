@@ -394,14 +394,14 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 /** The number of points along the X-axis of the graph.
  @param graph The graph object requesting the total number of points.
  @return The total number of points in the line graph. */
-- (NSUInteger)numberOfPointsInLineGraph:(BEMSimpleLineGraphView *)graph;
+- (NSInteger)numberOfPointsInLineGraph:(BEMSimpleLineGraphView *)graph;
 
 
 /** The vertical position for a point at the given index. It corresponds to the Y-axis value of the Graph.
  @param graph The graph object requesting the point value.
  @param index The index from left to right of a given point (X-axis). The first value for the index is 0.
  @return The Y-axis value at a given index. */
-- (CGFloat)lineGraph:(BEMSimpleLineGraphView *)graph valueForPointAtIndex:(NSUInteger)index;
+- (CGFloat)lineGraph:(BEMSimpleLineGraphView *)graph valueForPointAtIndex:(NSInteger)index;
 
 
 @optional
@@ -413,7 +413,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
  @discussion The number of strings to be returned should be equal to the number of points in the graph (returned in \p numberOfPointsInLineGraph). Otherwise, an exception may be thrown.
  @param graph The graph object which is requesting the label on the specified X-Axis position.
  @param index The index from left to right of a given label on the X-axis. Is the same index as the one for the points. The first value for the index is 0. */
-- (nullable NSString *)lineGraph:(nonnull BEMSimpleLineGraphView *)graph labelOnXAxisForIndex:(NSUInteger)index;
+- (nullable NSString *)lineGraph:(nonnull BEMSimpleLineGraphView *)graph labelOnXAxisForIndex:(NSInteger)index;
 
 
 @end
@@ -480,7 +480,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
  @param graph The graph object requesting the total number of points.
  @param index The index from left to right of the points on the graph. The first value for the index is 0.
  @return Return YES if you want the popup label to be displayed for this index. */
-- (BOOL)lineGraph:(BEMSimpleLineGraphView *)graph alwaysDisplayPopUpAtIndex:(NSUInteger)index;
+- (BOOL)lineGraph:(BEMSimpleLineGraphView *)graph alwaysDisplayPopUpAtIndex:(NSInteger)index;
 
 
 /** Optional method to set the maximum value of the Y-Axis. If not implemented, the maximum value will be the biggest point of the graph.
@@ -529,7 +529,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
  @param graph The graph object requesting the padding value.
  @param popupView The popup view owned by the graph that needs to be modified
  @param index The index of the element associated with the popup view */
-- (void)lineGraph:(BEMSimpleLineGraphView *)graph modifyPopupView:(UIView *)popupView forIndex:(NSUInteger)index;
+- (void)lineGraph:(BEMSimpleLineGraphView *)graph modifyPopupView:(UIView *)popupView forIndex:(NSInteger)index;
 
 
 //----- TOUCH EVENTS -----//
@@ -538,7 +538,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 /** Sent to the delegate when the user starts touching the graph. The property 'enableTouchReport' must be set to YES.
  @param graph The graph object which was touched by the user.
  @param index The closest index (X-axis) from the location the user is currently touching. */
-- (void)lineGraph:(BEMSimpleLineGraphView *)graph didTouchGraphWithClosestIndex:(NSUInteger)index;
+- (void)lineGraph:(BEMSimpleLineGraphView *)graph didTouchGraphWithClosestIndex:(NSInteger)index;
 
 
 /** Sent to the delegate when the user stops touching the graph.
