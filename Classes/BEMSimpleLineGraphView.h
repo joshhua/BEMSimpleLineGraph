@@ -368,7 +368,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 
 @property (nonatomic) CGFloat lineShadowRadius;
 @property (nonatomic) CGSize lineShadowOffset;
-@property (nonatomic) UIColor *lineShadowColor;
+@property (nonatomic, nullable) UIColor *lineShadowColor;
 
 @end
 
