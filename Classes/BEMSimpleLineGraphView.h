@@ -554,21 +554,21 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
  @discussion For example returning '1' would mean that half of the labels on the X-axis are not displayed: the first is not displayed, the second is, the third is not etc. Returning '0' would mean that all of the labels will be displayed. Finally, returning a value equal to the number of labels will only display the first and last label.
  @param graph The graph object which is requesting the number of gaps between the labels.
  @return The number of labels to "jump" between each displayed label on the X-axis. */
-- (NSUInteger)numberOfGapsBetweenLabelsOnLineGraph:(BEMSimpleLineGraphView *)graph;
+- (NSInteger)numberOfGapsBetweenLabelsOnLineGraph:(BEMSimpleLineGraphView *)graph;
 
 
 /** The starting index to plot X-Axis values.  MUST ALSO IMPLEMENT incrementIndexForXAxisOnLineGraph FOR THIS TO TAKE EFFECT
  @discussion This allows you to specify a custom starting index for drawing x axis labels
  @param graph The graph object which is requesting the number of gaps between the labels.
  @return The graph data index to begin drawing labels */
-- (NSUInteger)baseIndexForXAxisOnLineGraph:(BEMSimpleLineGraphView *)graph;
+- (NSInteger)baseIndexForXAxisOnLineGraph:(BEMSimpleLineGraphView *)graph;
 
 
 /** The increment to apply when drawing X-Axis labels.  This increment is applied to the base x axis index.  MUST ALSO IMPLEMENT baseIndexForXAxisOnLineGraph FOR THIS TO TAKE EFFECT
  @discussion This allows you to set a custom interval in drawing x axis labels. When this is set in conjuction with baseIndexForXAxisOnLineGraph, `numberOfGapsBetweenLabelsOnLineGraph` is ignored
  @param graph The graph object which is requesting the number of gaps between the labels.
  @return The increment between X-Axis labels */
-- (NSUInteger)incrementIndexForXAxisOnLineGraph:(BEMSimpleLineGraphView *)graph;
+- (NSInteger)incrementIndexForXAxisOnLineGraph:(BEMSimpleLineGraphView *)graph;
 
 
 /** An array of graph indices where X-Axis labels should be drawn
@@ -588,7 +588,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
  @discussion Calculates the total height of the graph and evenly spaces the labels based on the graph height. Default value is 3.
  @param graph The graph object which is requesting the number of labels.
  @return The number of labels displayed on the Y-axis. */
-- (NSUInteger)numberOfYAxisLabelsOnLineGraph:(BEMSimpleLineGraphView *)graph;
+- (NSInteger)numberOfYAxisLabelsOnLineGraph:(BEMSimpleLineGraphView *)graph;
 
 
 /** The optional prefix to append to the y axis.
