@@ -43,17 +43,11 @@ Learn more about the **BEMSimpleLineGraph** project requirements, licensing, and
 ### Requirements
 *See the full article on the wiki [here](https://github.com/Boris-Em/BEMSimpleLineGraph/wiki/Requirements).*
 
-- Requires iOS 7 or later. The sample project is optimized for iOS 8.
-- Requires Automatic Reference Counting (ARC).
-- Optimized for ARM64 Architecture
-
-Requires Xcode 6 for use in any iOS Project. Requires a minimum of iOS 7.0 as the deployment target. 
-
 | Current Build Target 	| Earliest Supported Build Target 	| Earliest Compatible Build Target 	|
 |:--------------------:	|:-------------------------------:	|:--------------------------------:	|
-|       iOS 8.0        	|            iOS 7.0             	|             iOS 6.1              	|
-|     Xcode 6.3      	|          Xcode 6.1.1            	|           Xcode 6.0            	|
-|      LLVM 6.1        	|             LLVM 6.1            	|             LLVM 5.0             	|
+|       iOS 9.0        	|            iOS 9.0             	|             iOS 7.0              	|
+|     Xcode 8.3      	|          Xcode 8.3            	|           Xcode 6.1            	|
+|      LLVM 8.1        	|           LLVM 8.1            	|            LLVM 6.1             	|
 
 > REQUIREMENTS NOTE  
 *Supported* means that the library has been tested with this version. *Compatible* means that the library should work on this OS version (i.e. it doesn't rely on any unavailable SDK features) but is no longer being tested for compatibility and may require tweaking or bug fixes to run correctly.
@@ -61,7 +55,7 @@ Requires Xcode 6 for use in any iOS Project. Requires a minimum of iOS 7.0 as th
 ### License
 See the [License](https://github.com/Boris-Em/BEMSimpleLineGraph/blob/master/LICENSE). You are free to make changes and use this in either personal or commercial projects. Attribution is not required, but it is appreciated. A little Thanks! (or something to that affect) would be much appreciated. If you use BEMSimpleLineGraph in your app, let us know.
 
-###Support
+### Support
 [![Gitter chat](https://badges.gitter.im/Boris-Em/BEMSimpleLineGraph.png)](https://gitter.im/Boris-Em/BEMSimpleLineGraph)  
 Join us on [Gitter](https://gitter.im/Boris-Em/BEMSimpleLineGraph) if you need any help or want to talk about the project.
 
@@ -86,7 +80,7 @@ The easiest way to install BEMSimpleLineGraph is to use <a href="http://cocoapod
 	
 The other way to install **BEMSimpleLineGraph**, is to drag and drop the *Classes* folder into your Xcode project. When you do so, check the "*Copy items into destination group's folder*" box.
 
-####Swift Projects
+#### Swift Projects
 To use **BEMSimpleLineGraph** in a Swift project add the following to your bridging header:
 
     #import "BEMSimpleLineGraphView.h"

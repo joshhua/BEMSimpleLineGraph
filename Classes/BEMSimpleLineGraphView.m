@@ -18,10 +18,11 @@ const CGFloat BEMNullGraphValue = CGFLOAT_MAX;
 #error BEMSimpleLineGraph is built with Objective-C ARC. You must enable ARC for these files.
 #endif
 
-typedef NS_ENUM(NSInteger, BEMInternalTags)
-{
+typedef NS_ENUM(NSInteger, BEMInternalTags) {
     DotFirstTag100 = 100,
 };
+
+// MARK: - Properties
 
 @interface BEMSimpleLineGraphView () {
     /// The number of Points in the Graph
@@ -47,9 +48,11 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 
 }
 
-#pragma mark Properties to store all subviews
+
+// MARK: Subview Storage Properties
+
 // Stores the background X Axis view
-@property (strong, nonatomic ) UIView *backgroundXAxis;
+@property (strong, nonatomic) UIView *backgroundXAxis;
 
 // Stores the background Y Axis view
 @property (strong, nonatomic) UIView *backgroundYAxis;
@@ -93,7 +96,9 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 // Possible custom View displayed instead of popUpLabel
 @property (strong, nonatomic) UIView *customPopUpView;
 
-#pragma mark calculated properties
+
+// MARK: Calculated Properties
+
 /// The Y offset necessary to compensate the labels on the X-Axis
 @property (nonatomic) CGFloat XAxisLabelYOffset;
 
@@ -118,15 +123,15 @@ typedef NS_ENUM(NSInteger, BEMInternalTags)
 
 @implementation BEMSimpleLineGraphView
 
-#pragma mark - Initialization
+// MARK: - Initialization
 
-- (instancetype) initWithFrame:(CGRect)frame {
+- (instancetype)initWithFrame:(CGRect)frame {
     self = [super initWithFrame:frame];
     if (self) [self commonInit];
     return self;
 }
 
-- (instancetype) initWithCoder:(NSCoder *)coder {
+- (instancetype)initWithCoder:(NSCoder *)coder {
     self = [super initWithCoder:coder];
     if (self) [self commonInit];
     [self restorePropertyWithCoder:coder];
@@ -197,7 +202,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     [self encodePropertiesWithCoder:coder];
 }
 
-- (void) encodeWithCoder: (NSCoder *)coder {
+- (void)encodeWithCoder:(NSCoder *)coder {
     [super encodeWithCoder:coder];
     [self encodePropertiesWithCoder:coder];
 }
@@ -351,14 +356,14 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 - (void)layoutSubviews {
     [super layoutSubviews];
 
-    if (CGSizeEqualToSize(self.currentViewSize, self.bounds.size))  return;
+    if (CGSizeEqualToSize(self.currentViewSize, self.bounds.size)) return;
     self.currentViewSize = self.bounds.size;
 
     [self drawGraph];
 }
 
 - (void)clearGraph {
-    for (UIView * subvView in self.subviews) {
+    for (UIView *subvView in self.subviews) {
         [subvView removeFromSuperview];
     }
 }
@@ -452,7 +457,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     }
 }
 
-#pragma mark - Drawing
+// MARK: - Drawing
 
 - (void)didFinishDrawingIncludingYAxis:(BOOL)yAxisFinishedDrawing {
     dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t) (self.animationGraphEntranceTime * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
@@ -510,7 +515,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     return ceil([labelString sizeWithAttributes:attributes].width);
 }
 
-- (CGFloat) calculateWidestLabel {
+- (CGFloat)calculateWidestLabel {
     NSDictionary *attributes = @{NSFontAttributeName: self.labelFont};
     CGFloat widestNumber;
     if (self.autoScaleYAxis == YES){
@@ -539,23 +544,20 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 
     [yAxisValues addObject:@(positionOnYAxis)];
 
+    CGRect dotFrame = CGRectMake(0, 0, self.sizePoint, self.sizePoint);
     BEMCircle *circleDot = nil;
     if (reuseNumber < self.circleDots.count) {
         circleDot = self.circleDots[reuseNumber];
-    }
-    if (dotValue >= BEMNullGraphValue) {
-        // If we're dealing with an null value, don't draw the dot (but put it in yAxis to interpolate line)
-        [circleDot removeFromSuperview];
-        return nil;
-    }
-
-    CGRect dotFrame = CGRectMake(0, 0, self.sizePoint, self.sizePoint);
-    if (circleDot) {
         circleDot.frame = dotFrame;
         [circleDot setNeedsDisplay];
     } else {
         circleDot = [[BEMCircle alloc] initWithFrame:dotFrame];
         [self.circleDots addObject:circleDot];
+    }
+    if (dotValue >= BEMNullGraphValue) {
+        // If we're dealing with an null value, don't draw the dot (but leave it in yAxis to interpolate line)
+        [circleDot removeFromSuperview];
+        return nil;
     }
 
     circleDot.center = CGPointMake(positionOnXAxis, positionOnYAxis);
@@ -568,7 +570,6 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 }
 
 - (void)drawDots {
-
     // Remove all data points before adding them to the array
     [dataPoints removeAllObjects];
 
@@ -592,27 +593,27 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 #endif
             [dataPoints addObject:@(dotValue)];
 
-            BEMCircle * circleDot = [self circleDotAtIndex: index forValue: dotValue reuseNumber: index];
-            UILabel * label = nil;
+            BEMCircle *circleDot = [self circleDotAtIndex: index forValue: dotValue reuseNumber: index];
+            UILabel *label = nil;
             if (index < self.permanentPopups.count) {
                 label = self.permanentPopups[index];
             } else {
                 label = [[UILabel alloc] initWithFrame:CGRectZero];
-                [self.permanentPopups addObject:label ];
+                [self.permanentPopups addObject:label];
             }
 
             if (circleDot) {
                 [self addSubview:circleDot];
 
-                if ((self.alwaysDisplayPopUpLabels == YES)  &&
+                if ((self.alwaysDisplayPopUpLabels == YES) &&
                     (![self.delegate respondsToSelector:@selector(lineGraph:alwaysDisplayPopUpAtIndex:)] ||
                       [self.delegate lineGraph:self alwaysDisplayPopUpAtIndex:index])) {
                     label = [self configureLabel:label forPoint: circleDot ];
 
                     [self adjustXLocForLabel:label avoidingDot:circleDot.frame];
 
-                    UILabel * leftNeighbor = (index >= 1 && self.permanentPopups[index-1].superview) ? self.permanentPopups[index-1] : nil;
-                    UILabel * secondNeighbor = (index >= 2 && self.permanentPopups[index-2].superview) ? self.permanentPopups[index-2] : nil;
+                    UILabel *leftNeighbor = (index >= 1 && self.permanentPopups[index-1].superview) ? self.permanentPopups[index-1] : nil;
+                    UILabel *secondNeighbor = (index >= 2 && self.permanentPopups[index-2].superview) ? self.permanentPopups[index-2] : nil;
                     BOOL showLabel =  [self adjustYLocForLabel:label
                                                    avoidingDot:circleDot.frame
                                                   andNeighbors:leftNeighbor.frame
@@ -631,7 +632,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
                 circleDot.alpha = 0.0f;
                 label.alpha = 0.0f;
                 if (self.animationGraphEntranceTime <= 0) {
-                    if (self.displayDotsOnly || self.alwaysDisplayDots ) {
+                    if (self.displayDotsOnly || self.alwaysDisplayDots) {
                         circleDot.alpha = 1.0f;
                     }
                     label.alpha = 1.0f;
@@ -681,7 +682,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         [self.masterLine setNeedsDisplay];
     }
     [self addSubview:self.masterLine];
-    BEMLine * line = self.masterLine;
+    BEMLine *line = self.masterLine;
     line.opaque = (self.alphaTop == 1. && self.alphaBottom == 1.);
     line.alpha = 1;
     line.backgroundColor = self.backgroundColor;
@@ -745,7 +746,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     if (!self.enableXAxisLabel) {
         [self.backgroundXAxis removeFromSuperview];
         self.backgroundXAxis = nil;
-        for (UILabel * label in self.xAxisLabels) {
+        for (UILabel *label in self.xAxisLabels) {
             [label removeFromSuperview];
         }
         self.xAxisLabels = [NSMutableArray array];
@@ -922,8 +923,8 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 }
 
 - (UILabel *)yAxisLabelWithText:(NSString *)text atValue:(CGFloat)value reuseNumber:(NSUInteger) reuseNumber {
-    //provide a Y-Axis Label with text at Value, reusing reuseNumber'd label if it exists
-    //special case: use self.Averageline.label if reuseNumber = NSIntegerMax
+    // provide a Y-Axis Label with text at Value, reusing reuseNumber'd label if it exists
+    // special case: use self.Averageline.label if reuseNumber = NSIntegerMax
     CGFloat labelHeight = self.labelFont.pointSize + 7.0f;
     CGRect frameForLabelYAxis = CGRectMake(1.0f, 0.0f, self.YAxisLabelXOffset - 1.0f, labelHeight);
 
@@ -935,7 +936,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     }
 
     UILabel *labelYAxis;
-    if ( reuseNumber == NSIntegerMax) {
+    if (reuseNumber == NSIntegerMax) {
         if (!self.averageLine.label) {
             self.averageLine.label = [[UILabel alloc] initWithFrame:frameForLabelYAxis];
         }
@@ -970,7 +971,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         self.backgroundYAxis = nil;
         [self.averageLine.label removeFromSuperview];
         self.averageLine.label = nil;
-        for (UILabel * label in self.yAxisLabels) {
+        for (UILabel *label in self.yAxisLabels) {
             [label removeFromSuperview];
         }
         self.yAxisLabels = [NSMutableArray array];
@@ -1008,7 +1009,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         if (numberOfLabels <= 0) return;
     }
 
-    //Now calculate baseValue and increment for all scenarios
+    // Now calculate baseValue and increment for all scenarios
     CGFloat value;
     CGFloat increment;
     if (self.autoScaleYAxis) {
@@ -1067,7 +1068,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     }
 
     // Detect overlapped labels
-    __block UILabel * prevLabel = nil;;
+    __block UILabel *prevLabel = nil;;
     NSMutableArray <UILabel *> *overlapLabels = [NSMutableArray arrayWithCapacity:0];
 
     [self.yAxisLabels enumerateObjectsUsingBlock:^(UILabel *label, NSUInteger idx, BOOL *stop) {
@@ -1100,8 +1101,8 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 
         [self addSubview:averageLabel];
 
-        //check for overlap; Average wins
-        for (UILabel * label in self.yAxisLabels) {
+        // Check for overlap; Average wins
+        for (UILabel *label in self.yAxisLabels) {
             if (! CGRectIsNull(CGRectIntersection(averageLabel.frame, label.frame))) {
                 [overlapLabels addObject:label];
             }
@@ -1116,7 +1117,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 }
 
 /// Area on the graph that doesn't include the axes
-- (CGRect) drawableGraphArea {
+- (CGRect)drawableGraphArea {
     //  CGRectMake(xAxisXPositionFirstOffset, self.frame.size.height-20, viewWidth/2, 20);
     CGFloat xAxisHeight = self.enableXAxisLabel ?  self.labelFont.pointSize + 8.0f : 0.0f;
     CGFloat xOrigin = self.positionYAxisRight ? 0 : self.YAxisLabelXOffset;
@@ -1135,11 +1136,10 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     return CGRectMake(xAxisXOrigin, xAxisYOrigin, xAxisWidth, xAxisHeight);
 }
 
-- (UILabel *)configureLabel: (UILabel *) oldLabel forPoint: (BEMCircle *)circleDot  {
-
+- (UILabel *)configureLabel:(UILabel *)oldLabel forPoint:(BEMCircle *)circleDot {
     UILabel *newPopUpLabel = oldLabel;
-    if ( !newPopUpLabel) {
-        newPopUpLabel =[[UILabel alloc] init];
+    if (!newPopUpLabel) {
+        newPopUpLabel = [[UILabel alloc] init];
         newPopUpLabel.alpha = 0;
     }
 
@@ -1149,7 +1149,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     newPopUpLabel.backgroundColor = [UIColor clearColor];
     newPopUpLabel.layer.backgroundColor = [self.colorBackgroundPopUplabel colorWithAlphaComponent:0.7f].CGColor;
     newPopUpLabel.layer.cornerRadius = 6;
-
+    
     NSUInteger index = (NSUInteger) circleDot.tag - DotFirstTag100;
 
     // Populate the popup label text with values
@@ -1180,42 +1180,41 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     return newPopUpLabel;
 }
 
-- (void)adjustXLocForLabel: (UIView *) popUpLabel avoidingDot: (CGRect) circleDotFrame {
-
-    //now fixup left/right layout issues
+- (void)adjustXLocForLabel:(UIView *)popUpLabel avoidingDot:(CGRect)circleDotFrame {
+    // Now fixup left/right layout issues
     CGFloat xCenter = CGRectGetMidX(circleDotFrame);
     CGFloat halfLabelWidth = popUpLabel.frame.size.width/2 ;
-    if (self.enableYAxisLabel && !self.positionYAxisRight && ((xCenter - halfLabelWidth) <= self.YAxisLabelXOffset) ) {
-        //When bumping into left Y axis
+    if (self.enableYAxisLabel && !self.positionYAxisRight && ((xCenter - halfLabelWidth) <= self.YAxisLabelXOffset)) {
+        // When bumping into left Y axis
         xCenter = halfLabelWidth + self.YAxisLabelXOffset + 4.0f;
     } else if (self.enableYAxisLabel && self.positionYAxisRight && (xCenter + halfLabelWidth >= self.frame.size.width - self.YAxisLabelXOffset)) {
-        //When bumping into right Y axis
+        // When bumping into right Y axis
         xCenter = self.frame.size.width - halfLabelWidth  - self.YAxisLabelXOffset - 4.0f;
     } else if (xCenter - halfLabelWidth <= 0) {
-        //When over left edge
+        // When over left edge
         xCenter = halfLabelWidth + 4.0f;
     } else if (xCenter + halfLabelWidth >= self.frame.size.width) {
-        //When over right edge
+        // When over right edge
         xCenter = self.frame.size.width - halfLabelWidth;
     }
     popUpLabel.center = CGPointMake(xCenter, popUpLabel.center.y);
 }
 
 - (BOOL)adjustYLocForLabel:(UIView *)popUpLabel avoidingDot:(CGRect)dotFrame andNeighbors:(CGRect)leftNeightbor and:(CGRect)secondNeighbor {
-    //returns YES if it can avoid those neighbors
-    //note: nil.frame == CGRectZero
-    //check for bumping into top OR overlap with left neighbors
-    //default Y is above point
+    // returns YES if it can avoid those neighbors
+    // note: nil.frame == CGRectZero
+    // check for bumping into top OR overlap with left neighbors
+    // default Y is above point
     CGFloat halfLabelHeight = popUpLabel.frame.size.height/2.0f;
-    popUpLabel.center = CGPointMake(popUpLabel.center.x, CGRectGetMinY(dotFrame) - 12.0f - halfLabelHeight );
+    popUpLabel.center = CGPointMake(popUpLabel.center.x, CGRectGetMinY(dotFrame) - 12.0f - halfLabelHeight);
     if (CGRectGetMinY(popUpLabel.frame) < 2.0f ||
         (!CGRectIsEmpty(CGRectIntersection(popUpLabel.frame, leftNeightbor))) ||
         (!CGRectIsEmpty(CGRectIntersection(popUpLabel.frame, secondNeighbor)))) {
-        //if so, try below point instead
+        // if so, try below point instead
         CGRect frame = popUpLabel.frame;
         frame.origin.y = CGRectGetMaxY(dotFrame)+12.0f;
         popUpLabel.frame = frame;
-        //check for bottom and again for overlap with neighbor and even neighbor second to the left
+        // check for bottom and again for overlap with neighbor and even neighbor second to the left
         if (CGRectGetMaxY(frame) > (self.frame.size.height - self.XAxisLabelYOffset) ||
             (!CGRectIsEmpty(CGRectIntersection(popUpLabel.frame, leftNeightbor))) ||
             (!CGRectIsEmpty(CGRectIntersection(popUpLabel.frame, secondNeighbor)))) {
@@ -1238,19 +1237,20 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
         CGContextRef context = UIGraphicsGetCurrentContext();
         if (context) [self.layer renderInContext:context];
     }
+    
     UIImage *image = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
 
     return image;
 }
 
-#pragma mark - Data Source
+// MARK: - Data Source
 
 - (void)reloadGraph {
     [self drawGraph];
 }
 
-#pragma mark - Values
+// MARK: - Values
 
 - (NSArray <NSString *> *)graphValuesForXAxis {
     return xAxisValues;
@@ -1275,7 +1275,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 }
 
 
-#pragma mark - Touch Gestures
+// MARK: - Touch Gestures
 
 - (BOOL)gestureRecognizerShouldBegin:(UIGestureRecognizer *)gestureRecognizer {
     if ([gestureRecognizer isEqual:self.panGesture]) {
@@ -1320,7 +1320,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     if (recognizer.state != UIGestureRecognizerStateEnded) {
         //ON START OR MOVE
         if (self.enablePopUpReport == YES  && self.alwaysDisplayPopUpLabels == NO) {
-            if (!self.customPopUpView && [self.delegate respondsToSelector:@selector(popUpViewForLineGraph:)] ) {
+            if (!self.customPopUpView && [self.delegate respondsToSelector:@selector(popUpViewForLineGraph:)]) {
                 self.customPopUpView = [self.delegate popUpViewForLineGraph:self];
             }
             if (self.customPopUpView) {
@@ -1372,12 +1372,13 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     }
 }
 
-#pragma mark - Graph Calculations
+// MARK: - Graph Calculations
 
 - (BEMCircle *)closestDotFromTouchInputLine:(UIView *)touchInputLine {
-    BEMCircle * closestDot = nil;
+    BEMCircle *closestDot = nil;
     CGFloat currentlyCloser = CGFLOAT_MAX;
     for (BEMCircle *point in self.circleDots) {
+        if (!point.superview) continue;
         if (self.alwaysDisplayDots == NO && self.displayDotsOnly == NO) {
             point.alpha = 0;
         }
@@ -1462,7 +1463,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     self.XAxisLabelYOffset = self.enableXAxisLabel ? self.backgroundXAxis.frame.size.height : 0.0f;
 
     if (self.autoScaleYAxis) {
-        if (self.minValue >= self.maxValue ) {
+        if (self.minValue >= self.maxValue) {
             positionOnYAxis = self.frame.size.height/2.0f;
         } else {
             CGFloat percentValue = (dotValue - self.minValue) / (self.maxValue - self.minValue);
@@ -1478,7 +1479,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     return positionOnYAxis;
 }
 
-#pragma mark - Deprecated Methods
+// MARK: - Deprecated Methods
 
  - (NSNumber *)calculatePointValueSum {
     [self printDeprecationTransitionWarningForOldMethod:@"calculatePointValueSum" replacementMethod:@"calculatePointValueSumOnGraph:" newObject:@"BEMGraphCalculator" sharedInstance:YES];
