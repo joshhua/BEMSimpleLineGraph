@@ -538,13 +538,13 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 /** Sent to the delegate when the user starts touching the graph. The property 'enableTouchReport' must be set to YES.
  @param graph The graph object which was touched by the user.
  @param index The closest index (X-axis) from the location the user is currently touching. */
-- (void)lineGraph:(BEMSimpleLineGraphView *)graph didTouchGraphWithClosestIndex:(NSInteger)index;
+- (void)lineGraph:(BEMSimpleLineGraphView *)graph didTouchGraphWithClosestIndex:(NSInteger)index point:(CGPoint)point;
 
 
 /** Sent to the delegate when the user stops touching the graph.
  @param graph The graph object which was touched by the user.
  @param index The closest index (X-axis) from the location the user last touched. */
-- (void)lineGraph:(BEMSimpleLineGraphView *)graph didReleaseTouchFromGraphWithClosestIndex:(CGFloat)index;
+- (void)lineGraph:(BEMSimpleLineGraphView *)graph didReleaseTouchFromGraphWithClosestIndex:(CGFloat)index point:(CGPoint)point;
 
 
 //----- X AXIS -----//

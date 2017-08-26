@@ -1349,13 +1349,13 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
             }
         }
 
-        if (self.enableTouchReport && [self.delegate respondsToSelector:@selector(lineGraph:didTouchGraphWithClosestIndex:)]) {
-            [self.delegate lineGraph:self didTouchGraphWithClosestIndex:index];
+        if (self.enableTouchReport && [self.delegate respondsToSelector:@selector(lineGraph:didTouchGraphWithClosestIndex:point:)]) {
+            [self.delegate lineGraph:self didTouchGraphWithClosestIndex:index point:translation];
         }
     } else {
         // ON RELEASE
-        if (self.enableTouchReport && [self.delegate respondsToSelector:@selector(lineGraph:didReleaseTouchFromGraphWithClosestIndex:)]) {
-            [self.delegate lineGraph:self didReleaseTouchFromGraphWithClosestIndex:index];
+        if (self.enableTouchReport && [self.delegate respondsToSelector:@selector(lineGraph:didReleaseTouchFromGraphWithClosestIndex:point:)]) {
+            [self.delegate lineGraph:self didReleaseTouchFromGraphWithClosestIndex:index point:translation];
         }
 
         [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
