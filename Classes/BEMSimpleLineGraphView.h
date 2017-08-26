@@ -201,7 +201,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 
 /** Draws a translucent frame between the graph and any enabled axis, when set to YES. Default value is NO.
  @see enableReferenceXAxisLines or enableReferenceYAxisLines must be set to YES for this property to have any effect.  */
-@property (nonatomic) BOOL enableReferenceAxisFrame;
+@property (nonatomic) IBInspectable BOOL enableReferenceAxisFrame;
 
 
 /** If reference frames are enabled, this will enable/disable specific borders.  Default: YES */
@@ -228,7 +228,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 
 
 /// If set to YES, the dots wil be removed after animating.  Default value is NO.
-@property (nonatomic) BOOL removeDotsAfterAnimating;
+@property (nonatomic) IBInspectable BOOL removeDotsAfterAnimating;
 
 
 /// If set to YES, pop up labels with the Y-value of the point will always be visible. Default value is NO.
@@ -284,7 +284,7 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 
 
 /// Color of the reference lines of the graph. Default is same color as `colorLine`.
-@property (strong, nonatomic) UIColor *colorReferenceLines;
+@property (strong, nonatomic) IBInspectable UIColor *colorReferenceLines;
 
 
 /// The size of the circles that represent each point. Default is 10.0.
@@ -296,15 +296,15 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 
 
 /// The color of the line that appears when the user touches the graph.
-@property (strong, nonatomic) UIColor *colorTouchInputLine;
+@property (strong, nonatomic) IBInspectable UIColor *colorTouchInputLine;
 
 
 /// The alpha of the line that appears when the user touches the graph.
-@property (nonatomic) CGFloat alphaTouchInputLine;
+@property (nonatomic) IBInspectable CGFloat alphaTouchInputLine;
 
 
 /// The width of the line that appears when the user touches the graph.
-@property (nonatomic) CGFloat widthTouchInputLine;
+@property (nonatomic) IBInspectable CGFloat widthTouchInputLine;
 
 
 /// Color of the label's text displayed on the X-Axis. Defaut value is blackColor.
