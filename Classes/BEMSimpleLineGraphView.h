@@ -101,6 +101,13 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 //------------------------------------------------------------------------------------//
 
 
+/// The gesture recognizer picking up the pan in the graph view
+@property (strong, nonatomic) UIPanGestureRecognizer *panGesture;
+
+/// This gesture recognizer picks up the initial touch on the graph view
+@property (strong, nonatomic) UILongPressGestureRecognizer *longPressGesture;
+
+
 /// The graph's label font used on various axis. This property may be privately overwritten, do not expect full functionality from this property.
 @property (strong, nonatomic, nullable) UIFont *labelFont;
 
@@ -187,6 +194,10 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 
 /// If set to YES, the dots wil be removed after animating.  Default value is NO.
 @property (nonatomic) IBInspectable BOOL removeDotsAfterAnimating;
+
+
+/// If set to YES, the popup report will be located at y=0.  Default value is NO.
+@property (nonatomic) IBInspectable BOOL positionPopupReportOnTop;
 
 
 /// If set to YES, pop up labels with the Y-value of the point will always be visible. Default value is NO.
@@ -324,9 +335,9 @@ IB_DESIGNABLE @interface BEMSimpleLineGraphView : UIView <UIGestureRecognizerDel
 /// When set to YES, dots will be displayed at full opacity and no line will be drawn through the dots. Default value is NO.
 @property (nonatomic) IBInspectable BOOL displayDotsOnly;
 
-@property (nonatomic) CGFloat lineShadowRadius;
-@property (nonatomic) CGSize lineShadowOffset;
-@property (nonatomic, nullable) UIColor *lineShadowColor;
+@property (nonatomic) IBInspectable CGFloat lineShadowRadius;
+@property (nonatomic) IBInspectable CGSize lineShadowOffset;
+@property (nonatomic, nullable) IBInspectable UIColor *lineShadowColor;
 
 @end
 

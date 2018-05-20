@@ -84,12 +84,6 @@ typedef NS_ENUM(NSInteger, BEMInternalTags) {
 /// Cirle to display when there's only one datapoint
 @property (strong, nonatomic) BEMCircle *oneDot;
 
-/// The gesture recognizer picking up the pan in the graph view
-@property (strong, nonatomic) UIPanGestureRecognizer *panGesture;
-
-/// This gesture recognizer picks up the initial touch on the graph view
-@property (strong, nonatomic) UILongPressGestureRecognizer *longPressGesture;
-
 /// The label displayed when enablePopUpReport is set to YES
 @property (strong, nonatomic) UILabel *popUpLabel;
 
@@ -112,7 +106,7 @@ typedef NS_ENUM(NSInteger, BEMInternalTags) {
 @property (nonatomic) CGFloat minValue;
 
 
-// Stores the current view size to detect whether a redraw is needed in layoutSubviews
+/// Stores the current view size to detect whether a redraw is needed in layoutSubviews
 @property (nonatomic) CGSize currentViewSize;
 
 /// Find which point is currently the closest to the vertical line
@@ -266,8 +260,9 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     _labelFont = [UIFont preferredFontForTextStyle:UIFontTextStyleCaption1];
 
     // Set Animation Values
+#ifndef TARGET_INTERFACE_BUILDER
     _animationGraphEntranceTime = 1.5;
-
+#endif
     // Set Color Values
     _colorXaxisLabel = [UIColor blackColor];
     _colorYaxisLabel = [UIColor blackColor];
@@ -328,6 +323,15 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     // Initialize BEM Objects
     _averageLine = [[BEMAverageLine alloc] init];
 }
+
+
+//#if TARGET_INTERFACE_BUILDER
+
+- (void)prepareForInterfaceBuilder {
+    [self drawGraph];
+}
+
+//#endif
 
 - (void)drawGraph {
     // Let the delegate know that the graph began layout updates
@@ -1201,6 +1205,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
 }
 
 - (BOOL)adjustYLocForLabel:(UIView *)popUpLabel avoidingDot:(CGRect)dotFrame andNeighbors:(CGRect)leftNeightbor and:(CGRect)secondNeighbor {
+    if (self.positionPopupReportOnTop) return YES;
     // returns YES if it can avoid those neighbors
     // note: nil.frame == CGRectZero
     // check for bumping into top OR overlap with left neighbors
@@ -1291,20 +1296,16 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     }
 }
 
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
-    return YES;
-}
-
-- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
-    return YES;
-}
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldRecognizeSimultaneouslyWithGestureRecognizer:(UIGestureRecognizer *)otherGestureRecognizer {
+//    return YES;
+//}
+//
+//- (BOOL)gestureRecognizer:(UIGestureRecognizer *)gestureRecognizer shouldReceiveTouch:(UITouch *)touch {
+//    return YES;
+//}
 
 - (void)handleGestureAction:(UIGestureRecognizer *)recognizer {
     CGPoint translation = [recognizer locationInView:self.viewForFirstBaselineLayout];
-
-    if (!((translation.x + self.frame.origin.x) <= self.frame.origin.x) && !((translation.x + self.frame.origin.x) >= self.frame.origin.x + self.frame.size.width)) { // To make sure the vertical line doesn't go beyond the frame of the graph.
-        self.touchInputLine.frame = CGRectMake(translation.x - self.widthTouchInputLine/2, 0, self.widthTouchInputLine, self.frame.size.height);
-    }
 
     self.touchInputLine.alpha = self.alphaTouchInputLine;
 
@@ -1315,7 +1316,7 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
     } else {
         if (numberOfPoints == 0) return; //something's very wrong
     }
-    closestDot.alpha = 0.8f;
+    if (!self.removeDotsAfterAnimating) closestDot.alpha = 0.8f;
 
     if (recognizer.state != UIGestureRecognizerStateEnded) {
         //ON START OR MOVE
@@ -1325,27 +1326,38 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
             }
             if (self.customPopUpView) {
                 [self addSubview:self.customPopUpView];
-                [self adjustXLocForLabel:self.customPopUpView avoidingDot:closestDot.frame];
-                [self adjustYLocForLabel:self.customPopUpView avoidingDot:closestDot.frame andNeighbors:CGRectZero and:CGRectZero];
                 if ([self.delegate respondsToSelector:@selector(lineGraph:modifyPopupView:forIndex:)]) {
-                    self.customPopUpView.alpha = 1.0f;
                     [self.delegate lineGraph:self modifyPopupView:self.customPopUpView forIndex:index];
+                }
+                if (self.positionPopupReportOnTop) {
+                    CGPoint center = self.customPopUpView.center;
+                    center.x = translation.x;
+                    self.customPopUpView.center = center;
+                    CGRect popupFrame = self.customPopUpView.frame;
+                    if (popupFrame.origin.x < 0) popupFrame.origin.x = 0;
+                    else if (CGRectGetMaxX(popupFrame) > self.bounds.size.width) {
+                        popupFrame.origin.x = self.bounds.size.width - popupFrame.size.width;
+                    }
+                    self.customPopUpView.frame = popupFrame;
                 } else {
-                    [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                        self.customPopUpView.alpha = 1.0f;
-                    } completion:nil];
+                    [self adjustXLocForLabel:self.customPopUpView avoidingDot:closestDot.frame];
+                    [self adjustYLocForLabel:self.customPopUpView avoidingDot:closestDot.frame andNeighbors:CGRectZero and:CGRectZero];
                 }
             } else {
                 if (!self.popUpLabel) {
                     self.popUpLabel = [[UILabel alloc] initWithFrame:CGRectZero];
                 }
-                [self addSubview: self.popUpLabel ];
+                [self addSubview:self.popUpLabel];
                 self.popUpLabel = [self configureLabel:self.popUpLabel forPoint:closestDot];
-                [self adjustXLocForLabel:self.popUpLabel avoidingDot:closestDot.frame];
-                [self adjustYLocForLabel:self.popUpLabel avoidingDot:closestDot.frame andNeighbors:CGRectZero and:CGRectZero];
-                [UIView animateWithDuration:0.2f delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
-                    self.popUpLabel.alpha = 1.0f;
-                } completion:nil];
+                if (self.positionPopupReportOnTop) {
+                    CGPoint center = self.customPopUpView.center;
+                    center.x = translation.x;
+                    self.customPopUpView.center = center;
+                } else {
+                    [self adjustXLocForLabel:self.popUpLabel avoidingDot:closestDot.frame];
+                    [self adjustYLocForLabel:self.popUpLabel avoidingDot:closestDot.frame andNeighbors:CGRectZero and:CGRectZero];
+                }
+                self.popUpLabel.alpha = 1.0f;
             }
         }
 
@@ -1358,17 +1370,26 @@ self.property = [coder decode ## type ##ForKey:@#property]; \
             [self.delegate lineGraph:self didReleaseTouchFromGraphWithClosestIndex:index point:translation];
         }
 
-        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
+//        [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseOut animations:^{
             if (self.alwaysDisplayDots == NO && self.displayDotsOnly == NO) {
                 closestDot.alpha = 0;
             }
             self.touchInputLine.alpha = 0;
             self.popUpLabel.alpha = 0;
             self.customPopUpView.alpha = 0;
-        } completion:^(BOOL finished) {
+//        } completion:^(BOOL finished) {
             [self.customPopUpView removeFromSuperview];
             self.customPopUpView = nil;
-        }];
+//        }];
+    }
+    
+    if (!((translation.x + self.frame.origin.x) <= self.frame.origin.x) && !((translation.x + self.frame.origin.x) >= self.frame.origin.x + self.frame.size.width)) { // To make sure the vertical line doesn't go beyond the frame of the graph.
+        CGFloat y = 0;
+        if (self.positionPopupReportOnTop) {
+            UIView *v = self.customPopUpView ?: self.popUpLabel;
+            y = v.frame.size.height;
+        }
+        self.touchInputLine.frame = CGRectMake(translation.x - self.widthTouchInputLine/2, y, self.widthTouchInputLine, self.frame.size.height);
     }
 }
 
